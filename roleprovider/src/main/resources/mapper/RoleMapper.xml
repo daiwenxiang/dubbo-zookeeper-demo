@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.roleprovider.mapper.RoleMapper">
+
+  <resultMap id="allRoleQx" type="hashmap">
+    <id column="id" property="id"/>
+    <result column="role" property="role"/>
+    <collection property="qxs" ofType="map" javaType="list">
+      <id column="pid" property="pid"/>
+      <result property="permission" column="permission"/>
+    </collection>
+  </resultMap>
+
+  <select id="getAllRoleQx" resultMap="allRoleQx">
+    select r.id, role, p.id pid, permission
+    from sys_role r
+           left join sys_role_permission rp on r.id = rp.role_id
+           left join sys_permission p on rp.permission_id = p.id
+  </select>
+
+  <insert id="addRoleQxs">
+    insert into sys_role_permission values
+    <foreach collection="roleQxs" separator="," item="roleQx">
+      (#{roleQx.pid}, #{roleQx.rid})
+    </foreach>
+  </insert>
+
+</mapper>
